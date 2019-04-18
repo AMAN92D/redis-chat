@@ -1,0 +1,18 @@
+.navbar-hardis {
+    background-color: #3399cc;
+}
+
+.monitoring-warning {
+    background-color: orange;
+}
+
+.monitoring-critical {
+    background-color: red;
+}
+.monitoring-ok {
+    background-color: green;
+}
+
+.monitoring-unknown {
+    background-color: #d3d3d3;
+}

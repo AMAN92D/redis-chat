@@ -1,0 +1,34 @@
+version: '3'
+
+services: 
+  chat-flask-server:
+    image: chat-flask-base
+    container_name: "chat-flask"
+    build: .
+    hostname: "chat-flask"
+    volumes:
+      - ./flask_web_server:/var/www/flask_web_server
+    ports:
+      - 5000:5000
+    working_dir : /var/www/flask_web_server
+    command: /bin/sh /var/www/flask_web_server/docker-entrypoint.sh
+
+  chat-redis:
+    image: redis
+    container_name: "chat-redis"
+    build:
+      context: /usr/local/src/redis-chat/redis-data/
+      dockerfile: Dockerfile
+    volumes:
+      - /usr/local/src/redis-chat/redis-data/data/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6377:6377
+
+  chat-mongo:
+    image: mongo
+    container_name: "chat-mongo"
+    hostname: "chat-mongo"
+    ports:
+      - 27017:27017
+    volumes:
+      - /usr/local/src/redis-chat/mongo-data/data:/data/db
