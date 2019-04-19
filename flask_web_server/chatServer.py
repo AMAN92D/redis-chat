@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template
+import datetime
+
+print(datetime.date.today())
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "║kjksdf_ètjmlfk654-+:§$€uçàçufç_(_(_-por"
 
-#TODO fix import homepage. Only retreive 404
-from views import homepage
+from views.homepage import *
 
-# @app.route('/')
-# def homepage():
-#     return render_template('homepage.html'), 200
+####### Handling Erros #########
 
 @app.errorhandler(401)
 def error401(e):

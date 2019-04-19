@@ -5,5 +5,5 @@ sys.path.append('/var/www/flask_web_server')
 from chatServer import app
 
 @app.route('/')
-def homepage():
+def home():
     return render_template('homepage.html'), 200
