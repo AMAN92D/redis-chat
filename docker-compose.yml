@@ -11,21 +11,21 @@ services:
     ports:
       - 5000:5000
     working_dir : /var/www/flask_web_server
-    command: /bin/sh /var/www/flask_web_server/docker-entrypoint.sh
+    command: ["sh", "docker-entrypoint.sh"]
     depends_on:
       - "chat-mongo"
-      - "chat-redis"      
+      - "chat-redis"
 
   chat-redis:
     image: redis
     container_name: "chat-redis"
-    build:
-      context: /usr/local/src/redis-chat/redis-data/
-      dockerfile: Dockerfile
+    hostname: "chat-redis"
     volumes:
-      - /usr/local/src/redis-chat/redis-data/data/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis-data/:/usr/local/etc/redis/
     ports:
-      - 6377:6377
+      - 6379:6379
+    working_dir : /usr/local/etc/redis
+    command: ["sh", "/usr/local/etc/redis/docker-entrypoint.sh"]
 
   chat-mongo:
     image: mongo:3.4

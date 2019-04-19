@@ -8,5 +8,6 @@ itsdangerous==1.1.0
 pymongo==2.8
 mongoengine==0.8.0
 flask_mongoengine==0.7.1
+Flask-And-Redis==1.0.0
 Flask-SocketIO
 gevent

@@ -4,19 +4,22 @@ from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_socketio import SocketIO
 from flask_mongoengine import MongoEngine
+from flask_redis import Redis
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "║kjksdf_ètjmlfk654-+:§$€uçàçufç_(_(_-por"
-
-# app.config['MONGODB_HOST'] = 'mongodb://chat-mongo:27017/chat'
+app.config['SECRET_KEY'] = "║kjksdf_Jtjmlfk654!86§$€uepXuf!_!_!_-por"
 
 app.config['MONGODB_SETTINGS'] = {
     'host': 'mongodb://chat-mongo:27017/chat',
     'db': 'chat'
 }
 
-socketio = SocketIO(app)
+app.config['REDIS1_URL'] = 'redis://chat-redis:6379/1'
+
 db = MongoEngine(app)
+redis = Redis(app, 'REDIS1')
+socketio = SocketIO(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

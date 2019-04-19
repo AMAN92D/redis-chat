@@ -1,4 +1,4 @@
-from chatServer import db
+from chatServer import db, redis
 from hashlib import sha512
 
 import sys
@@ -18,9 +18,20 @@ try:
             email = "aman@chat.fr",
             friends = []
         ).save()
-    
-    print("DATABASE INIT SUCCESSFULLY")
+        
+    print("\n===== INIT OUPUT ==== \n")
+    print("MONGO DATABASE INIT SUCCESSFULLY :\nUsername : Aman\nPassword : aman")
 
 except Exception as e:
-    print("ERROR DURING DATABASE INIT")
+    print("ERROR DURING MONGO DATABASE INIT")
     raise e
+
+try:
+    if redis.ping():
+        print("\nREDIS DATABASE INIT SUCCESSFULLY")
+        print(redis.info()['redis_version'])
+    print("\n===== END ==== \n")
+
+except Exception as e:
+    print("ERROR DURING REDIS DATABASE INIT")
+    raise e        
