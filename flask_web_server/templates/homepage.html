@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/bootstrap.min.css') }}">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>    
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>    
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
@@ -13,7 +14,25 @@
 </head>
 
 <body>
-    <div class="container" style="margin-top:30px">
-        <h1>Homepage</h1>
-    </div>
+<script type="text/javascript">
+$(document).ready(function() {
+	var socket = io.connect('http://192.168.132.141:5000');
+	socket.on('connect', function() {
+		socket.send('User has connected!');
+	});
+	socket.on('message', function(msg) {
+		$("#messages").append('<li>'+msg+'</li>');
+		console.log('Received message');
+	});
+	$('#sendbutton').on('click', function() {
+		socket.send($('#myMessage').val());
+		$('#myMessage').val('');
+	});
+});
+</script>
+
+<ul id="messages"></ul>
+    <input type="text" id="myMessage">
+    <button id="sendbutton">Send</button>
 </body>
+</html>

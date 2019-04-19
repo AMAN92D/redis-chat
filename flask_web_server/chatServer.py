@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template
+from flask_socketio import SocketIO
 import datetime
-
-print(datetime.date.today())
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "║kjksdf_ètjmlfk654-+:§$€uçàçufç_(_(_-por"
+socketio = SocketIO(app)
+
 
 from views.homepage import *
 
@@ -27,5 +28,4 @@ def error500(e):
 ######### Start the Server ##########
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run(host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', debug=True)
