@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template
+from flask_login import LoginManager
 from flask_socketio import SocketIO
-import datetime
+from flask_mongoengine import MongoEngine
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "║kjksdf_ètjmlfk654-+:§$€uçàçufç_(_(_-por"
-socketio = SocketIO(app)
 
+# app.config['MONGODB_HOST'] = 'mongodb://chat-mongo:27017/chat'
+
+app.config['MONGODB_SETTINGS'] = {
+    'host': 'mongodb://chat-mongo:27017/chat',
+    'db': 'chat'
+}
+
+socketio = SocketIO(app)
+db = MongoEngine(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
 from views.homepage import *
+from views.profil import *
+from views.login import *
 
 ####### Handling Erros #########
 
