@@ -5,9 +5,10 @@ from flask_login import LoginManager
 from flask_socketio import SocketIO
 from flask_mongoengine import MongoEngine
 from flask_redis import Redis
-
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 
 app = Flask(__name__)
+
 app.config['SECRET_KEY'] = "║kjksdf_Jtjmlfk654!86§$€uepXuf!_!_!_-por"
 
 app.config['MONGODB_SETTINGS'] = {
@@ -16,6 +17,11 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 app.config['REDIS1_URL'] = 'redis://chat-redis:6379/1'
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pic'
+
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
+patch_request_class(app)
 
 db = MongoEngine(app)
 redis = Redis(app, 'REDIS1')
@@ -28,6 +34,20 @@ login_manager.login_view = "login"
 from views.homepage import *
 from views.profil import *
 from views.login import *
+
+from models.users_models import *
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        return User.objects(pk=user_id).first()
+    except:
+        return None
+
+
+def login_exempt(f):
+    f.login_exempt = True
+    return f
 
 ####### Handling Erros #########
 
