@@ -10,6 +10,6 @@ mongoengine==0.8.0
 flask_mongoengine==0.7.1
 Flask-And-Redis==1.0.0
 Flask-Uploads==0.2.1
-Flask-SocketIO
+pusher
 gevent
 Flask-WTF

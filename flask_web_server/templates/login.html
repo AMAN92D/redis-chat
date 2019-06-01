@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/bootstrap.min.css') }}">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>    
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>    
     <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
@@ -62,8 +61,7 @@ h2 {
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 30px;
-  width: 90%;
-  max-width: 450px;
+  width: 450px;
   position: relative;
   padding: 0px;
   -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
@@ -289,17 +287,14 @@ h1{
 
     <!-- Icon -->
     <div class="fadeIn first">
-      <img src="https://www.b-cube.in/wp-content/uploads/2014/05/aditya-300x177.jpg" id="icon" alt="User Icon" />
-      <h1>Aditya News</h1>
+      <h1>Login</h1>
     </div>
 
     <!-- Login Form -->
     <form method="POST" action="{{ url_for('login') }}">
       {{ loginForm.username }}
-      {{ loginForm.password(class_='form-control input', id='password') }}
+      {{ loginForm.password(class_='form-control input fadeIn third', id='password', type='text') }}
       {{ loginForm.submit }}
-      <!-- <input type="text" id="login" class="fadeIn second" name="username" placeholder="username">
-      <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">-->
     </form>
 
     <!-- Remind Passowrd -->

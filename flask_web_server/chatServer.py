@@ -2,10 +2,20 @@
 
 from flask import Flask, render_template
 from flask_login import LoginManager
-from flask_socketio import SocketIO
 from flask_mongoengine import MongoEngine
 from flask_redis import Redis
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+import pusher
+
+#### App Init ####
+
+pusher_client = pusher.Pusher(
+  app_id='767564',
+  key='fabd2102b489229ba7b7',
+  secret='467be41fedd0cbf0a815',
+  cluster='eu',
+  ssl=True
+)
 
 app = Flask(__name__)
 
@@ -25,15 +35,19 @@ patch_request_class(app)
 
 db = MongoEngine(app)
 redis = Redis(app, 'REDIS1')
-socketio = SocketIO(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+#### Exposing Views ####
+
 from views.homepage import *
 from views.profil import *
 from views.login import *
+
+
+#### Manage User ####
 
 from models.users_models import *
 
@@ -49,7 +63,7 @@ def login_exempt(f):
     f.login_exempt = True
     return f
 
-####### Handling Erros #########
+#### Handling Erros ####
 
 @app.errorhandler(401)
 def error401(e):
@@ -66,4 +80,4 @@ def error500(e):
 ######### Start the Server ##########
 
 if __name__ == "__main__":
-    socketio.run(app, host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True)

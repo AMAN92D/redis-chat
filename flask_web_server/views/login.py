@@ -6,7 +6,7 @@ from hashlib import sha512
 import sys
 sys.path.append('/var/www/flask_web_server')
 
-from chatServer import app
+from chatServer import app, redis
 from models.users_models import User
 from views.forms import LoginForm, RegisterForm
 
@@ -26,7 +26,7 @@ def login():
         if registred_user :
             if (registred_user.password == sha512(submitted_password.encode()).hexdigest() ):
                 login_user(registred_user)
-                return redirect(url_for('homepage')), 200
+                return redirect(url_for('homepage'))
             else:
                 alert = "Incorect Password"
                 return render_template("login.html", alert=alert, loginForm=loginForm), 401
@@ -34,7 +34,6 @@ def login():
             alert = "Unknown User"
             return render_template("login.html", alert=alert, loginForm=loginForm), 401
         
-
     return render_template('login.html', loginForm=loginForm), 200
 
 @app.route('/signup', methods=['GET', 'POST'])
