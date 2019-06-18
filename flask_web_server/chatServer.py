@@ -1,6 +1,7 @@
+#!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
-
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, send_from_directory
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
 from flask_redis import Redis
@@ -8,6 +9,8 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_cl
 import pusher
 
 #### App Init ####
+
+print(os.environ.get("APPENV"))
 
 pusher_client = pusher.Pusher(
   app_id='767564',
@@ -17,7 +20,11 @@ pusher_client = pusher.Pusher(
   ssl=True
 )
 
+# app = Flask(__name__, static_folder='static/', 
+#     template_folder='static/')
+
 app = Flask(__name__)
+
 
 app.config['SECRET_KEY'] = "║kjksdf_Jtjmlfk654!86§$€uepXuf!_!_!_-por"
 
@@ -36,6 +43,18 @@ patch_request_class(app)
 db = MongoEngine(app)
 redis = Redis(app, 'REDIS1')
 
+# @app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+# def serve(path):
+#     if path != "" and os.path.exists(app.static_folder + path):
+#         return send_from_directory(app.static_folder, path)
+#     else:
+#         return send_from_directory(app.static_folder, 'index.html')
+
+# @app.route('/inspire', defaults={'path': ''})
+# def server(path):
+#     return "dksljf"
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -45,7 +64,6 @@ login_manager.login_view = "login"
 from views.homepage import *
 from views.profil import *
 from views.login import *
-
 
 #### Manage User ####
 
@@ -57,7 +75,6 @@ def load_user(user_id):
         return User.objects(pk=user_id).first()
     except:
         return None
-
 
 def login_exempt(f):
     f.login_exempt = True
@@ -80,4 +97,4 @@ def error500(e):
 ######### Start the Server ##########
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host="0.0.0.0", debug=True)

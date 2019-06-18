@@ -95,4 +95,4 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login')), 200
+    return redirect(url_for('login'))
