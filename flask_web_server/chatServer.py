@@ -7,10 +7,9 @@ from flask_mongoengine import MongoEngine
 from flask_redis import Redis
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 import pusher
+from pymongo import MongoClient
 
 #### App Init ####
-
-print(os.environ.get("APPENV"))
 
 pusher_client = pusher.Pusher(
   app_id='767564',
@@ -25,13 +24,15 @@ pusher_client = pusher.Pusher(
 
 app = Flask(__name__)
 
-
 app.config['SECRET_KEY'] = "║kjksdf_Jtjmlfk654!86§$€uepXuf!_!_!_-por"
 
 app.config['MONGODB_SETTINGS'] = {
     'host': 'mongodb://chat-mongo:27017/chat',
     'db': 'chat'
 }
+
+client = MongoClient("chat-mongo", 27017)
+db2 = client.chat
 
 app.config['REDIS1_URL'] = 'redis://chat-redis:6379/1'
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/profile_pic'

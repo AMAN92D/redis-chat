@@ -169,24 +169,57 @@ img{ max-width:100%;}
 <script type="text/javascript">
   $(document).ready(function() {
     // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    //Pusher.logToConsole = true;
 
-    var user_name = ({{user.username|tojson|safe}});
+    let user_name = ({{user.username|tojson|safe}});
+    let users = JSON.parse({{users|tojson|safe}});
+    let words = {{words|tojson|safe}};
+    let dateNow = new Date();
+    dateNow = dateNow.toLocaleTimeString() +"    |    " +dateNow.getDate()+"/"+dateNow.getMonth()
     
-    console.log(user_name);
+    console.log(dateNow);
+
+    users.forEach(function(item){
+      $('.inbox_chat').append('<div class="chat_list"><div class="chat_people"><div class="chat_img"><img src="http://192.168.132.155:5000/profil/' + item['avatarPath'] +'"></div><div class="chat_ib"><h5>'+ item['username'] +' <span class="chat_date">Status</span></h5></div></div></div>');
+    });
 
     var pusher = new Pusher('fabd2102b489229ba7b7', {
+      authEndpoint: "/api/pusher/auth",
       cluster: 'eu',
       forceTLS: true
     });
+
+    var censor = (function() {
+    function convertToAsterisk(word) {
+        var asteriskSentence = '';
+        for(var asterisks=0;asterisks<word.length;asterisks++) {
+            asteriskSentence+='*';
+        }
+        return asteriskSentence;
+    }
+
+    return function(sentence, bannedWords) {
+        sentence    = sentence      || undefined;
+        bannedWords = bannedWords   || undefined;
+
+        if(sentence!==undefined && bannedWords!==undefined) {
+            for(var word=0;word<bannedWords.length;word++) {
+                sentence = sentence.replace(bannedWords[word], convertToAsterisk(bannedWords[word]));
+            }
+        }
+
+        return sentence;
+    };
+})();
 
     //var incoming_msg_template = '<div class="incoming_msg"><div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div><div class="received_msg"><div class="received_withd_msg"><p></p><span class="time_date"> 11:01 AM    |    June 9</span></div></div></div>';
     //var outgoing_msg_template = '<div class="outgoing_msg" id="sent_msg"><div class="sent_msg"><p>' + msg + '</p><span class="time_date"></span> </div></div>';
 
     var channel = pusher.subscribe('chat-channel');
+    //var presence_channel = pusher.subscribe('presence-channel');
 
     channel.bind('new-message', function(data) {
-      $(".msg_history").append('<div class="outgoing_msg" id="sent_msg"><div class="sent_msg"><p>' + data['message'] + '</p><span class="time_date"></span> </div></div>');
+      $(".msg_history").append('<div class="outgoing_msg" id="sent_msg"><div class="sent_msg"><p>' + data['message'] + '</p><span class="time_date">' + dateNow +'</span> </div></div>');
       $('.msg_history').animate({
         scrollTop: ($('#sent_msg').first().offset().top)
       },500);
@@ -195,7 +228,8 @@ img{ max-width:100%;}
     $('#sendbutton').on('click', function() {
       
       var msg = $('.write_msg').val();
-      
+      msg = censor(msg, words)
+
       var paylod = JSON.stringify({
         "username": user_name,
         "send_to": "Momo",
@@ -204,35 +238,21 @@ img{ max-width:100%;}
   
       $.ajax({
         type: 'POST',
-        url: '/message',
-        data: paylod, // or JSON.stringify ({name: 'jonas'}),
-        success: function(data) { alert("SUCCESS"); },
+        url: 'http://192.168.132.155:5000/message',
+        crossDomain: true,
+        data: paylod,
         contentType: "application/json",
-        dataType: 'json'
+        dataType: 'json',
+        success: function(data) { 
+          $('.write_msg').val('');
+        },
+        error: function(data) {   
+          
+        }
     });
   
   	});
   });
-
-
-/*$(document).ready(function() {
-	var socket = io.connect('http://192.168.132.141:5000');
-	socket.on('connect', function() {
-		socket.send('User has connected!');
-	});
-	socket.on('message', function(msg) {
-		$(".msg_history").append('<div class="outgoing_msg" id="sent_msg"><div class="sent_msg"><p>' + msg + '</p><span class="time_date"></span> </div></div>');
-    $('.msg_history').animate({
-      scrollTop: ($('#sent_msg').first().offset().top)
-    },500);
-
-		console.log('Received message');
-	});
-	$('#sendbutton').on('click', function() {
-		socket.send($('.write_msg').val());
-		$('.write_msg').val('');
-	});
-});*/
 </script>
 
 
@@ -242,7 +262,7 @@ img{ max-width:100%;}
         <div class="inbox_people">
           <div class="headind_srch">
             <div class="recent_heading">
-              <h4>Recent</h4>
+              <h4>Users</h4>
             </div>
             <div class="srch_bar">
               <div class="stylish-input-group">
@@ -253,45 +273,11 @@ img{ max-width:100%;}
             </div>
           </div>
           <div class="inbox_chat">
-            <div class="chat_list active_chat">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>Test, which is a new approach to have all solutions 
-                    astrology under one roof.</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>Test, which is a new approach to have all solutions 
-                    astrology under one roof.</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="mesgs">
           <div class="msg_history">
-            <div class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <p>Test which is a new approach to have all
-                    solutions</p>
-                  <span class="time_date"> 11:01 AM    |    June 9</span></div>
-              </div>
-            </div>
-            <div class="outgoing_msg">
-              <div class="sent_msg">
-                <p>Test which is a new approach to have all
-                  solutions</p>
-                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-            </div>
+
           </div>
           <div class="type_msg">
             <div class="input_msg_write">

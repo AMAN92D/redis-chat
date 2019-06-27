@@ -9,7 +9,7 @@ sys.path.append('/var/www/flask_web_server')
 from chatServer import app, redis
 from models.users_models import User
 from views.forms import LoginForm, RegisterForm
-
+import pusher
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
